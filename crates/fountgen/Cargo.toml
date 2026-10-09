@@ -1,0 +1,15 @@
+[package]
+name = "fountgen"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "A library for randomly generating fountain screenplay scripts."
+repository = "https://github.com/frblo/fountgen"
+keywords = ["fountain", "screenplay", "stageplay"]
+categories = ["development-tools::testing"]
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+rand = "0.10.3"

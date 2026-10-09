@@ -1,0 +1,3 @@
+[workspace]
+members = ["crates/fountgen", "crates/fountgen-cli"]
+resolver = "2"
