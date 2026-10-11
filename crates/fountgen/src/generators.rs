@@ -2,23 +2,30 @@ use std::io::{Result, Write};
 
 use rand::{
     Rng, RngExt,
-    distr::{Alphabetic, Alphanumeric, SampleString, slice::Choose},
     seq::{IndexedRandom, index::sample},
 };
 
 use crate::generators::{
     FountainElements::{
-        Action, CenteredText, Dialouge, DualDialogue, Lyrics, Pagebreak, Synopsis, Transition,
+        Action, CenteredText, Dialouge, DualDialogue, Lyrics, Pagebreak, Transition,
     },
     action::ActionGenerator,
     centered_text::CenteredTextGenerator,
+    dialouge::{DialogueGenerator, DualDialogueGenerator},
+    lyrics::LyricsGenerator,
+    pagebreak::PagebreakGenerator,
     scene::SceneGenerator,
+    transition::TransitionGenerator,
 };
 
 mod action;
 mod centered_text;
+mod dialouge;
+mod lyrics;
+mod pagebreak;
 mod scene;
 mod titlepage;
+mod transition;
 
 pub struct GeneratorOptions {
     /// Allow markdown formatting of content, like `*text*`.
@@ -65,20 +72,19 @@ impl Generator for FountainGenerator {
 
         for elements_in_scene in elements_in_scenes {
             SceneGenerator::generate(rng, opts, writer)?;
+            writeln!(writer)?;
             for _ in 0..elements_in_scene {
-                writeln!(writer)?;
-
                 let element = &ELEMENT_WEIGHTS.choose_weighted(rng, |e| e.1).unwrap().0;
                 match element {
-                    Action => ActionGenerator::generate(rng, opts, writer)?,
-                    Dialouge => todo!(),
-                    DualDialogue => todo!(),
-                    Lyrics => todo!(),
-                    Transition => todo!(),
-                    CenteredText => CenteredTextGenerator::generate(rng, opts, writer)?,
-                    Synopsis => todo!(),
-                    Pagebreak => todo!(),
-                }
+                    Action => ActionGenerator::generate(rng, opts, writer),
+                    Dialouge => DialogueGenerator::generate(rng, opts, writer),
+                    DualDialogue => DualDialogueGenerator::generate(rng, opts, writer),
+                    Lyrics => LyricsGenerator::generate(rng, opts, writer),
+                    Transition => TransitionGenerator::generate(rng, opts, writer),
+                    CenteredText => CenteredTextGenerator::generate(rng, opts, writer),
+                    Pagebreak => PagebreakGenerator::generate(rng, opts, writer),
+                }?;
+                writeln!(writer)?;
             }
         }
 
@@ -93,19 +99,17 @@ pub enum FountainElements {
     Lyrics,
     Transition,
     CenteredText,
-    Synopsis,
     Pagebreak,
 }
 
 const ELEMENT_WEIGHTS: &[(FountainElements, usize)] = &[
     (Action, 10),
-    // (Dialouge, 10),
-    // (DualDialogue, 2),
-    // (Lyrics, 1),
-    // (Transition, 3),
+    (Dialouge, 10),
+    (DualDialogue, 2),
+    (Lyrics, 2),
+    (Transition, 3),
     (CenteredText, 4),
-    // (Synopsis, 2),
-    // (Pagebreak, 2),
+    (Pagebreak, 1),
 ];
 
 fn divide_elements<R>(rng: &mut R, element_count: usize, scene_count: usize) -> Vec<usize>
