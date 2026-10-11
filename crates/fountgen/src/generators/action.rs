@@ -11,7 +11,7 @@ impl Generator for ActionGenerator {
     where
         R: Rng,
     {
-        let force = opts.allow_forced && rng.random_bool(0.5);
+        let force = opts.allow_forced && rng.random_bool(0.2);
         if force {
             write!(writer, "!")?;
         }

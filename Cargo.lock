@@ -212,6 +212,7 @@ dependencies = [
  "clap",
  "color-eyre",
  "fountgen",
+ "rand",
 ]
 
 [[package]]
