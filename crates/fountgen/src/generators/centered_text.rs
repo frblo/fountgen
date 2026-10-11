@@ -2,7 +2,10 @@ use std::io::{Result, Write};
 
 use rand::{Rng, RngExt};
 
-use crate::generators::{Generator, GeneratorOptions, generate_text};
+use crate::{
+    generators::{Generator, GeneratorOptions},
+    text::generate_text,
+};
 
 pub struct CenteredTextGenerator {}
 
@@ -17,7 +20,7 @@ impl Generator for CenteredTextGenerator {
         write!(
             writer,
             "{}",
-            generate_text(rng, centered_text_len, opts.allow_markdown, true)
+            generate_text(rng, centered_text_len, opts.allow_markdown, true, true)
         )?;
 
         write!(writer, "<")?;

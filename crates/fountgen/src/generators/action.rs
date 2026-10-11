@@ -2,7 +2,10 @@ use std::io::{Result, Write};
 
 use rand::{Rng, RngExt};
 
-use crate::generators::{Generator, GeneratorOptions, generate_text};
+use crate::{
+    generators::{Generator, GeneratorOptions},
+    text::generate_text,
+};
 
 pub struct ActionGenerator {}
 
@@ -20,7 +23,7 @@ impl Generator for ActionGenerator {
         write!(
             writer,
             "{}",
-            generate_text(rng, action_len / 2, opts.allow_markdown, true)
+            generate_text(rng, action_len / 2, opts.allow_markdown, true, true)
         )?;
 
         // Ensures we don't accidently create a character
@@ -28,14 +31,14 @@ impl Generator for ActionGenerator {
             write!(
                 writer,
                 "{}",
-                generate_text(rng, action_len / 2, opts.allow_markdown, false)
+                generate_text(rng, action_len / 2, opts.allow_markdown, false, true)
             )?;
         }
 
         write!(
             writer,
             "{}",
-            generate_text(rng, action_len / 2, opts.allow_markdown, true)
+            generate_text(rng, action_len / 2, opts.allow_markdown, true, true)
         )?;
 
         writeln!(writer)?;

@@ -2,7 +2,7 @@ use std::io::{Result, Write};
 
 use rand::{
     Rng, RngExt,
-    distr::{Alphabetic, Alphanumeric, SampleString},
+    distr::{Alphabetic, Alphanumeric, SampleString, slice::Choose},
     seq::{IndexedRandom, index::sample},
 };
 
@@ -48,24 +48,6 @@ pub trait Generator {
         R: Rng;
 }
 
-pub fn generate_text<R>(
-    rng: &mut R,
-    len: usize,
-    allow_markdown: bool,
-    include_numbers: bool,
-) -> String
-where
-    R: Rng,
-{
-    let res = if include_numbers {
-        Alphanumeric.sample_string(rng, len)
-    } else {
-        Alphabetic.sample_string(rng, len)
-    };
-
-    res
-}
-
 pub struct FountainGenerator {}
 
 impl Generator for FountainGenerator {
@@ -104,7 +86,7 @@ impl Generator for FountainGenerator {
     }
 }
 
-enum FountainElements {
+pub enum FountainElements {
     Action,
     Dialouge,
     DualDialogue,

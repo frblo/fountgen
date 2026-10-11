@@ -2,7 +2,10 @@ use std::io::{Result, Write};
 
 use rand::{Rng, RngExt, seq::IndexedRandom};
 
-use crate::generators::{Generator, GeneratorOptions, generate_text};
+use crate::{
+    generators::{Generator, GeneratorOptions},
+    text::generate_text,
+};
 
 pub struct SceneGenerator {}
 
@@ -15,7 +18,7 @@ impl Generator for SceneGenerator {
         if force {
             write!(writer, ".")?;
         } else {
-            let prefix = *VALID_SCENE_PREFIXES.choose(rng).unwrap();
+            let prefix = VALID_SCENE_PREFIXES.choose(rng).unwrap();
             write!(writer, "{}. ", prefix)?;
         }
 
@@ -23,14 +26,18 @@ impl Generator for SceneGenerator {
         write!(
             writer,
             "{}",
-            generate_text(rng, heading_len, opts.allow_markdown, true)
+            generate_text(rng, heading_len, opts.allow_markdown, true, true)
         )?;
 
         // Write scene number?
         if rng.random_bool(0.2) {
             write!(writer, " #")?;
             let number_len = rng.random_range(1..6);
-            write!(writer, "{}", generate_text(rng, number_len, false, true))?;
+            write!(
+                writer,
+                "{}",
+                generate_text(rng, number_len, false, true, false)
+            )?;
             write!(writer, "#")?;
         }
 
@@ -39,4 +46,4 @@ impl Generator for SceneGenerator {
     }
 }
 
-const VALID_SCENE_PREFIXES: &[&str] = &["INT", "EXT", "EST", "INT./EXT", "INT/EXT", "I/E"];
+const VALID_SCENE_PREFIXES: [&str; 6] = ["INT", "EXT", "EST", "INT./EXT", "INT/EXT", "I/E"];
